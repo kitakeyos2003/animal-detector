@@ -4,6 +4,8 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.layers import Flatten, Dense, Dropout
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from sklearn.metrics import classification_report, confusion_matrix
+import numpy as np
 
 data_dir = "animal_data"
 class_names = ["Bear", "Bird", "Cat", "Cow", "Deer", "Dog", "Dolphin", "Elephant", "Giraffe", "Horse", "Kangaroo", "Lion", "Panda", "Tiger", "Zebra"]
@@ -14,7 +16,7 @@ batch_size = 32
 
 datagen = ImageDataGenerator(
     rescale=1./255,
-    validation_split=0.2
+    validation_split=0.4
 )
 
 train_data_gen = datagen.flow_from_directory(
@@ -58,7 +60,18 @@ history = model.fit(
     callbacks=[early_stopping, lr_reduction]
 )
 
-loss, accuracy = model.evaluate(validation_data_gen)
-print(f"Validation accuracy: {accuracy * 100:.2f}%")
-
+# Save the model
 model.save("animal_classifier_model.keras")
+
+# Evaluate the model on validation data
+val_predictions = model.predict(validation_data_gen)
+y_pred = np.argmax(val_predictions, axis=1)
+y_true = validation_data_gen.classes
+
+# Classification Report
+print("Classification Report:")
+print(classification_report(y_true, y_pred, target_names=class_names))
+
+# Confusion Matrix
+print("Confusion Matrix:")
+print(confusion_matrix(y_true, y_pred))

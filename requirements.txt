@@ -3,3 +3,4 @@ tensorflow
 Pillow
 tk
 keras
+scikit-learn
