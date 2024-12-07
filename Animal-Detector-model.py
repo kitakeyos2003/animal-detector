@@ -16,7 +16,7 @@ batch_size = 32
 
 datagen = ImageDataGenerator(
     rescale=1./255,
-    validation_split=0.4
+    validation_split=0.2
 )
 
 train_data_gen = datagen.flow_from_directory(
